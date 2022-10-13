@@ -5,12 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
+    <style>
+        .lead{
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 6px;
+            padding-right: 6px;
+            margin-top: 10px;
+            background-color: #f6f6f6;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome To my Site</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam quis iure, vitae voluptatem eum debitis quam cumque totam voluptates nulla magni aliquid. Vero totam provident fugit neque nam officia incidunt, ad consequatur nihil et architecto, voluptas suscipit illum officiis tempore debitis recusandae reiciendis saepe amet, alias quas vel modi reprehenderit.</p>
+
     {% for i in data %}
-    <p>{{ i }}</p>
+    <div class="lead">
+      <a href="lead_details/{{i.pk}}">{{ i.first_name }}{{  i.last_name }}</a>  
+    </div>
+    
     {% endfor %}
 </body>
 </html>
