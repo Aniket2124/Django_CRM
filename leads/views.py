@@ -3,6 +3,11 @@ from django.http import HttpResponse
 from .models import Lead, Agent
 from .forms import LeadForm, LeadModelForm
 
+
+def home(request):
+    return render(request,"landing.html")
+
+
 # Create your views here.
 def lead_list(request):
     data = Lead.objects.all()

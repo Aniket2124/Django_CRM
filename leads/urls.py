@@ -6,7 +6,7 @@ from .views import lead_list, lead_details, lead_create, lead_update, lead_delet
 app_name = "leads"
 urlpatterns = [
     
-    path('',lead_list,name='lead_list'),
+    path('lead-list',lead_list,name='lead_list'),
     path('lead-details/<int:pk>',lead_details,name='lead_detail'),
     path('lead-create',lead_create,name='lead_create'),
     path('lead_update/<int:pk>',lead_update,name='lead_update'),
