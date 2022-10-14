@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Details</title>
-</head>
-<body>
-    <h1>Lead Details</h1>
+{% extends 'base.html' %}
+{% block title %} Lead Detail {% endblock title %}
+{% block content %} 
+    <a href="{% url 'leads:lead_update' lead.pk %}"><button type="submit">Update Lead</button></a><br><br>
+    <a href="{% url 'leads:lead_delete' lead.pk %}"><button type="submit">Delete Lead</button></a><br>
+    <h1>Lead Details</h1><hr>
     <li>This is detail Views</li>
     <li>Hi I Am {{lead}}</li>
-    <li>age is: {{ lead.age }}</li>
-</body>
-</html>
+    <li>age is: {{ lead.age }}</li><br>
+
+    <a href="{% url 'leads:lead_list' %}"><button type="submit">Back</button></a>
+
+{% endblock content %}
