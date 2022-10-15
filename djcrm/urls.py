@@ -13,13 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import imp
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from leads.views import home
+from djcrm.settings import STATIC_ROOT
 # from leads.views import home
+from leads.views import HomeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',home, name='home'),
-    path('leads/',include('leads.urls'))
+    # path('',home, name='home'),
+    path('',HomeView.as_view()),
+    path('leads/',include('leads.urls'))    
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_ROOT, document_root=settings.STATIC_ROOT)
