@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect,reverse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from .models import Lead, Agent
-from .forms import LeadForm, LeadModelForm
+from .forms import LeadForm, LeadModelForm, CustomUserCreationForm
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class HomeView(TemplateView):
     template_name="landing.html"
@@ -11,6 +12,13 @@ class HomeView(TemplateView):
 
 # def home(request):
 #     return render(request,"landing.html")
+
+class SignUpView(CreateView):
+    form_class = CustomUserCreationForm
+    template_name='registration/signup.html'
+
+    def get_success_url(self):
+        return reverse ("login")
 
 
 # Create your views here.
@@ -21,7 +29,7 @@ def lead_list(request):
 
 
 #---------------------------
-class LeadListView(ListView):
+class LeadListView(LoginRequiredMixin, ListView):
     model = Lead
     context_object_name = 'data'
     template_name='leads/lead_list.html'
@@ -30,7 +38,7 @@ def lead_details(request, pk):
     lead = Lead.objects.get(id=pk)
     return render(request,"leads/lead_details.html", {"lead":lead})
 #-------------------------------
-class LeadDetailView(DetailView):
+class LeadDetailView(LoginRequiredMixin, DetailView):
     model = Lead
     context_object_name = 'lead'
     template_name='leads/lead_details.html'
@@ -72,7 +80,7 @@ def lead_create(request):
     return render(request,"leads/create_lead.html",context)
     #-----------------------------------
 
-class LeadCreateView(CreateView):
+class LeadCreateView(LoginRequiredMixin, CreateView):
     # model = Lead
     # context_object_name = 'lead'
     form_class = LeadModelForm
@@ -134,7 +142,7 @@ def lead_update(request, pk):
     return render(request,"leads/update_lead.html",context)
 
 #--------------------------------------
-class LeadUpdateView(UpdateView):
+class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
     # context_object_name = 'lead'
     form_class = LeadModelForm
@@ -150,7 +158,7 @@ def lead_delete(request, pk):
     return redirect("/")
 
 #---------------------------------
-class LeadDeleteView(DeleteView):
+class LeadDeleteView(LoginRequiredMixin, DeleteView):
     model = Lead
     template_name='leads/lead_delete.html'
 
