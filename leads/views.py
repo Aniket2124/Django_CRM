@@ -5,6 +5,8 @@ from .models import Lead, Agent
 from .forms import LeadForm, LeadModelForm, CustomUserCreationForm
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from agents.mixins import organizerAndLoginRequiredMixin
+
 
 class HomeView(TemplateView):
     template_name="landing.html"
@@ -30,18 +32,34 @@ def lead_list(request):
 
 #---------------------------
 class LeadListView(LoginRequiredMixin, ListView):
-    model = Lead
     context_object_name = 'data'
     template_name='leads/lead_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organizations = user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organizations = user.agent.organizations)
+            queryset = queryset.filter(agent__user = user)
+        return queryset
 
 def lead_details(request, pk):
     lead = Lead.objects.get(id=pk)
     return render(request,"leads/lead_details.html", {"lead":lead})
 #-------------------------------
 class LeadDetailView(LoginRequiredMixin, DetailView):
-    model = Lead
     context_object_name = 'lead'
     template_name='leads/lead_details.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organizations = user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organizations = user.agent.organizations)
+            queryset = queryset.filter(agent__user = user)
+        return queryset
 
 # def lead_create(request):
     # form = LeadForm() 
@@ -80,7 +98,7 @@ def lead_create(request):
     return render(request,"leads/create_lead.html",context)
     #-----------------------------------
 
-class LeadCreateView(LoginRequiredMixin, CreateView):
+class LeadCreateView(organizerAndLoginRequiredMixin, CreateView):
     # model = Lead
     # context_object_name = 'lead'
     form_class = LeadModelForm
@@ -142,11 +160,13 @@ def lead_update(request, pk):
     return render(request,"leads/update_lead.html",context)
 
 #--------------------------------------
-class LeadUpdateView(LoginRequiredMixin, UpdateView):
-    model = Lead
-    # context_object_name = 'lead'
+class LeadUpdateView(organizerAndLoginRequiredMixin, UpdateView):
     form_class = LeadModelForm
     template_name='leads/update_lead.html'
+
+    def get_queryset(self):
+        user = self.request.user       
+        return Lead.objects.filter(organizations = user.userprofile)
 
     def get_success_url(self):
         return reverse ("leads:lead_list")
@@ -158,9 +178,13 @@ def lead_delete(request, pk):
     return redirect("/")
 
 #---------------------------------
-class LeadDeleteView(LoginRequiredMixin, DeleteView):
+class LeadDeleteView(organizerAndLoginRequiredMixin, DeleteView):
     model = Lead
     template_name='leads/lead_delete.html'
+
+    def get_queryset(self):
+        user = self.request.user       
+        return Lead.objects.filter(organizations = user.userprofile)
 
     def get_success_url(self):
         return reverse ("leads:lead_list")
