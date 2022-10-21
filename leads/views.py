@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import render, redirect,reverse
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -38,11 +39,22 @@ class LeadListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         if user.is_organizer:
-            queryset = Lead.objects.filter(organizations = user.userprofile)
+            queryset = Lead.objects.filter(organizations = user.userprofile, agent__isnull=False)
         else:
-            queryset = Lead.objects.filter(organizations = user.agent.organizations)
+            queryset = Lead.objects.filter(organizations = user.agent.organizations, agent__isnull=False)
             queryset = queryset.filter(agent__user = user)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(LeadListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organizations = user.userprofile, agent__isnull=True)
+            context.update({
+                "unassigned_leads":queryset
+            })
+        return context
+
 
 def lead_details(request, pk):
     lead = Lead.objects.get(id=pk)
@@ -109,6 +121,7 @@ class LeadCreateView(organizerAndLoginRequiredMixin, CreateView):
 
 
     def form_valid(self,form) :
+        form.save()
         # to send email
         send_mail(
             subject = "Lead has been Created",
