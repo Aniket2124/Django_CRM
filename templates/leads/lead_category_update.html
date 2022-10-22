@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Lead Update {% endblock title %}
+{% block title %} Category Update {% endblock title %}
 {% block content %}
 
 
@@ -12,9 +12,9 @@
           <div class="flex mb-4">
             <a href="{% url 'leads:lead_detail' lead.pk %}" class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">
                 Overview</a>
-                <a href="{% url 'leads:lead_category_update' lead.pk %}" class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">
-                  Category</a>
-            <a href="{% url 'leads:lead_update' lead.pk %}" class="w-1/3 flex-grow text-indigo-500 border-b-2 border-indigo-500 py-2 text-lg px-1">
+            <a href="{% url 'leads:lead_category_update' lead.pk %}" class="w-1/3 flex-grow text-indigo-500 border-b-2 border-indigo-500 py-2 text-lg px-1">
+                Category</a>
+            <a href="{% url 'leads:lead_update' lead.pk %}" class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">
                 Update Deatails</a>
           </div>
             <form action="" method="post">

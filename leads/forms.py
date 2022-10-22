@@ -1,7 +1,7 @@
 from random import choices
 from urllib import request
 from django import forms
-from .models import Lead, Agent
+from .models import Category, Lead, Agent
 from django.contrib.auth.forms import UserCreationForm,UsernameField
 from django.contrib.auth import get_user_model
 
@@ -38,3 +38,9 @@ class AssignAgentForm(forms.Form):
         agents = Agent.objects.filter(organizations = request.user.userprofile)
         super(AssignAgentForm,self).__init__(*args, **kwargs)
         self.fields["agent"].queryset = agents
+
+
+class LeadCategoryUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Lead
+        fields = ['category',]
