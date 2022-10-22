@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path
 
 # from .views import lead_list,lead_details,lead_create,lead_update,lead_delete
-from .views import LeadDeleteView, LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView, DeleteView
+from .views import LeadDeleteView, LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView\
+    , LeadDeleteView, AssignAgentView
 
 app_name = "leads"
 urlpatterns = [
@@ -19,5 +20,6 @@ urlpatterns = [
     path('lead-create',LeadCreateView.as_view(),name='lead_create'),
     path('lead_update/<int:pk>',LeadUpdateView.as_view(),name='lead_update'),
     path('lead-delete/<int:pk>',LeadDeleteView.as_view(),name='lead_delete'),
+    path('assign_agent/<int:pk>',AssignAgentView.as_view(),name='assign_agent'),
    
 ]

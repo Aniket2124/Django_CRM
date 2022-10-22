@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect,reverse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from .models import Lead, Agent
-from .forms import LeadForm, LeadModelForm, CustomUserCreationForm
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from .forms import LeadForm, LeadModelForm, CustomUserCreationForm, AssignAgentForm
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from agents.mixins import organizerAndLoginRequiredMixin
 
@@ -121,7 +121,9 @@ class LeadCreateView(organizerAndLoginRequiredMixin, CreateView):
 
 
     def form_valid(self,form) :
-        form.save()
+        lead = form.save(commit=False)
+        lead.organizations = self.request.user.userprofile
+        lead.save()
         # to send email
         send_mail(
             subject = "Lead has been Created",
@@ -201,3 +203,25 @@ class LeadDeleteView(organizerAndLoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse ("leads:lead_list")
+
+
+class AssignAgentView(organizerAndLoginRequiredMixin ,FormView):
+    template_name='leads/assign_agent.html'
+    form_class = AssignAgentForm
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentView,self).get_form_kwargs(**kwargs)
+        kwargs.update( {
+            "request":self.request
+        })
+        return kwargs
+
+    def get_success_url(self):
+        return reverse ("leads:lead_list")
+
+    def form_valid(self,form) :
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id = self.kwargs["pk"])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentView, self).form_valid(form)
