@@ -158,21 +158,21 @@ class LeadCreateView(organizerAndLoginRequiredMixin, CreateView):
 
 
 
-def lead_update(request, pk):
-    lead = Lead.objects.get(id=pk)
-    form = LeadModelForm(instance=lead) 
-    if request.method == "POST":
-        print("Post request")
-        form = LeadModelForm(request.POST, instance=lead)
-        if form.is_valid():            
-            form.save()
-            return redirect("/")
+# def lead_update(request, pk):
+#     lead = Lead.objects.get(id=pk)
+#     form = LeadModelForm(instance=lead) 
+#     if request.method == "POST":
+#         print("Post request")
+#         form = LeadModelForm(request.POST, instance=lead)
+#         if form.is_valid():            
+#             form.save()
+#             return redirect("/")
 
-    context={
-        "form":LeadModelForm(),
-        "lead":lead
-    }
-    return render(request,"leads/update_lead.html",context)
+#     context={
+#         "form":LeadModelForm(),
+#         "lead":lead
+#     }
+#     return render(request,"leads/update_lead.html",context)
 
 #--------------------------------------
 class LeadUpdateView(organizerAndLoginRequiredMixin, UpdateView):

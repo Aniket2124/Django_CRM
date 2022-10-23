@@ -29,10 +29,10 @@ class AgentCreateView(organizerAndLoginRequiredMixin, generic.CreateView):
         user.is_organizer = False
         user.set_password(f"{random.randint(0,100000)}")
         user.save()
-        Agent.objects.create(user=user,organizations = self.request.user.userprofile)
+        Agent.objects.create(user=user, organizations = self.request.user.userprofile)
         send_mail(
 
-            subject ="You are to be Agent",
+            subject ="You are Invited to be Agent",
             message = "Welcome to DJCRM please login to start working.",
             from_email = "admin@dmin.com",
             recipient_list = [user.email]
@@ -53,14 +53,17 @@ class AgentDetailView(organizerAndLoginRequiredMixin,generic.DetailView):
 
 class AgentUpdateView(organizerAndLoginRequiredMixin, generic.UpdateView):
     form_class = AgentModelForm
-    template_name='agents/agent_update.html'
-    context_object_name = 'agent'
+    template_name='agents/agent_update.html'   
+    
 
     def get_success_url(self):
         return reverse("agents:agent_list")
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organizations=organisation)
+
+    
 
 class AgentDeleteView(organizerAndLoginRequiredMixin, generic.DeleteView):
     model = Agent

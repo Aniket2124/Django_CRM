@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
-{% block title %} Lead Create {% endblock title %}
+{% load tailwind_filters %}
+{% block title %} Assign Agent {% endblock title %}
 {% block content %}
 
-
-    <h1>Assign Agent</h1><hr>
-    <a href="/">Back to home</a>
-    <hr>
-    <form action="" method="post">
+<h1 class="text-4xl text-gray-800">Assign Agent</h1>
+    <div class="py-5 border-b border-gray-200">
+        <a class="hover:text-blue-500" href="{% url 'leads:lead_list' %}">Back to home</a>
+    </div>
+    <form action="" method="post" class="mt-5">
         {% csrf_token %}
-        {{ form.as_p }}
-    <button type="submit">Submit</button>
+        {{ form|crispy }}
+    <button type="submit" class="w-full bg-blue-500 text-white hover:bg-blue-600 px-3 py-1 rounded-md">Assign Agent</button>
 </form>
 {% endblock content %}
